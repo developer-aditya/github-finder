@@ -38,13 +38,22 @@ class App extends Component {
 		}
 	}
 
+	clearUsersFromApp() {
+		this.setState({ users: [], laoding: false });
+	}
 	render() {
 		const { users, loading } = this.state;
 		return (
 			<Fragment>
 				<Navbar />
 				<div className='container'>
-					<Search searchUser={this.searchUserFromApp.bind(this)} />
+					<Search
+						searchUser={this.searchUserFromApp.bind(this)}
+						clearUsers={this.clearUsersFromApp.bind(this)}
+						showClearButton={
+							this.state.users.length > 0 ? true : false
+						}
+					/>
 					<User users={users} loading={loading} />
 				</div>
 			</Fragment>
