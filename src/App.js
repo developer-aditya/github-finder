@@ -1,26 +1,19 @@
 import React, { Component, Fragment } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './components/layouts/Navbar';
 import User from './components/users/User';
 import Search from './components/users/Search';
+import Alert from './components/layouts/Alert';
+import About from './components/page/About';
 import './App.css';
 
 class App extends Component {
 	state = {
 		users: [],
 		loading: false,
+		alert: null,
 	};
-
-	// async componentDidMount() {
-	// 	this.setState({ loading: true });
-	// 	const options = {
-	// 		url: 'https://api.github.com/users',
-	// 		method: 'GET',
-	// 		timeout: 4000,
-	// 	};
-	// 	const res = await axios(options);
-	// 	this.setState({ users: res.data, loading: false });
-	// }
 
 	async searchUserFromApp(text) {
 		this.setState({ loading: true });
@@ -41,22 +34,54 @@ class App extends Component {
 	clearUsersFromApp() {
 		this.setState({ users: [], laoding: false });
 	}
+
+	showAlertBox(msg, type) {
+		this.setState({ alert: { type, msg } });
+		setTimeout(() => {
+			this.setState({ alert: null });
+		}, 3000);
+	}
 	render() {
-		const { users, loading } = this.state;
+		const { users, loading, alert } = this.state;
 		return (
-			<Fragment>
-				<Navbar />
-				<div className='container'>
-					<Search
-						searchUser={this.searchUserFromApp.bind(this)}
-						clearUsers={this.clearUsersFromApp.bind(this)}
-						showClearButton={
-							this.state.users.length > 0 ? true : false
-						}
-					/>
-					<User users={users} loading={loading} />
+			<Router>
+				<div className='App'>
+					<Navbar />
+					<div className='container'>
+						<Switch>
+							<Route
+								exact
+								path='/'
+								render={(props) => {
+									return (
+										<Fragment>
+											<Alert alert={alert} />
+											<Search
+												searchUser={this.searchUserFromApp.bind(
+													this,
+												)}
+												clearUsers={this.clearUsersFromApp.bind(
+													this,
+												)}
+												callAlert={this.showAlertBox.bind(
+													this,
+												)}
+												showClearButton={
+													this.state.users.length > 0
+														? true
+														: false
+												}
+											/>
+											<User users={users} loading={loading} />
+										</Fragment>
+									);
+								}}
+							/>
+							<Route exact path='/about' component={About} />
+						</Switch>
+					</div>
 				</div>
-			</Fragment>
+			</Router>
 		);
 	}
 }
