@@ -2,10 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './components/layouts/Navbar';
-import User from './components/users/User';
+import Users from './components/users/Users';
 import Search from './components/users/Search';
 import Alert from './components/layouts/Alert';
 import About from './components/page/About';
+import User from './components/users/User';
 import './App.css';
 
 class App extends Component {
@@ -13,6 +14,7 @@ class App extends Component {
 		users: [],
 		loading: false,
 		alert: null,
+		user: {},
 	};
 
 	async searchUserFromApp(text) {
@@ -41,8 +43,25 @@ class App extends Component {
 			this.setState({ alert: null });
 		}, 3000);
 	}
+
+	async getUserData(username) {
+		this.setState({ loading: true });
+		try {
+			const options = {
+				url: `https://api.github.com/users/${username}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`,
+				method: 'GET',
+				timeout: 4000,
+			};
+			const res = await axios(options);
+			this.setState({ user: res.data, loading: false });
+		} catch (err) {
+			this.setState({ loading: false });
+			console.log(err);
+		}
+	}
+
 	render() {
-		const { users, loading, alert } = this.state;
+		const { users, loading, alert, user } = this.state;
 		return (
 			<Router>
 				<div className='App'>
@@ -72,12 +91,24 @@ class App extends Component {
 														: false
 												}
 											/>
-											<User users={users} loading={loading} />
+											<Users users={users} loading={loading} />
 										</Fragment>
 									);
 								}}
 							/>
 							<Route exact path='/about' component={About} />
+							<Route
+								exact
+								path='/user/:login'
+								render={(props) => (
+									<User
+										{...props}
+										getUser={this.getUserData.bind(this)}
+										user={user}
+										loading={loading}
+									/>
+								)}
+							/>
 						</Switch>
 					</div>
 				</div>
