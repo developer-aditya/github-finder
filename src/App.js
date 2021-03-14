@@ -15,6 +15,7 @@ class App extends Component {
 		loading: false,
 		alert: null,
 		user: {},
+		repos: [],
 	};
 
 	async searchUserFromApp(text) {
@@ -56,12 +57,26 @@ class App extends Component {
 			this.setState({ user: res.data, loading: false });
 		} catch (err) {
 			this.setState({ loading: false });
-			console.log(err);
+		}
+	}
+
+	async getUserRepos(username) {
+		this.setState({ loading: true });
+		try {
+			const options = {
+				url: `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`,
+				method: 'GET',
+				timeout: 4000,
+			};
+			const res = await axios(options);
+			this.setState({ repos: res.data, loading: false });
+		} catch (err) {
+			this.setState({ loading: false });
 		}
 	}
 
 	render() {
-		const { users, loading, alert, user } = this.state;
+		const { users, loading, alert, user, repos } = this.state;
 		return (
 			<Router>
 				<div className='App'>
@@ -104,7 +119,9 @@ class App extends Component {
 									<User
 										{...props}
 										getUser={this.getUserData.bind(this)}
+										getRepos={this.getUserRepos.bind(this)}
 										user={user}
+										repos={repos}
 										loading={loading}
 									/>
 								)}

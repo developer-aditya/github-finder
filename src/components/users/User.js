@@ -1,11 +1,23 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import Repos from '../repos/Repos';
+import PropTypes from 'prop-types';
+import Spinner from '../layouts/Spinner';
 
 export class User extends Component {
+	static propType = {
+		getUser: PropTypes.func.isRequired,
+		getRepos: PropTypes.func.isRequired,
+		user: PropTypes.object.isRequired,
+		repos: PropTypes.array.isRequired,
+		loading: PropTypes.bool.isRequired,
+	};
 	componentDidMount() {
 		this.props.getUser(this.props.match.params.login);
+		this.props.getRepos(this.props.match.params.login);
 	}
 	render() {
+		const { user, repos, loading } = this.props;
 		const {
 			avatar_url,
 			name,
@@ -16,8 +28,13 @@ export class User extends Component {
 			login,
 			blog,
 			company,
-		} = this.props.user;
-		console.log(this.props.user);
+			followers,
+			following,
+			public_repos,
+			public_gist,
+		} = user;
+
+		if (loading) return <Spinner />;
 
 		return (
 			<Fragment>
@@ -66,7 +83,21 @@ export class User extends Component {
 						</small>
 					</div>
 				</div>
-				<div className='card my-1'></div>
+				<div className='card text-center my-1'>
+					<div className='badge badge-primary'>
+						Followers: {followers}
+					</div>
+					<div className='badge badge-success'>
+						Following: {following}
+					</div>
+					<div className='badge badge-light'>
+						Public Repos: {public_repos}
+					</div>
+					<div className='badge badge-dark'>
+						Public Gist: {public_gist}
+					</div>
+				</div>
+				<Repos repos={repos} />
 			</Fragment>
 		);
 	}
