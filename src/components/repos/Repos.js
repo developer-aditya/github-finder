@@ -1,8 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import ReposItem from './ReposItem';
-import PropTypes from 'prop-types';
+import GithubContext from '../../context/GithubContext/githubContext';
 
-const Repos = ({ repos }) => {
+const Repos = (props) => {
+	const { repos } = useContext(GithubContext);
 	return (
 		<Fragment>
 			{repos.map((repo) => (
@@ -10,10 +11,6 @@ const Repos = ({ repos }) => {
 			))}
 		</Fragment>
 	);
-};
-
-Repos.PropType = {
-	repos: PropTypes.array.isRequired,
 };
 
 export default Repos;
