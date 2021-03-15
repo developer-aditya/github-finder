@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/layouts/Navbar';
-import Users from './components/users/Users';
-import Search from './components/users/Search';
 import Alert from './components/layouts/Alert';
+import Home from './components/page/Home';
 import About from './components/page/About';
+import NotFound from './components/page/NotFound';
 import User from './components/users/User';
 import GithubState from './context/GithubContext/GithubState';
 import AlertState from './context/AlertContext/AlertState';
@@ -17,27 +17,15 @@ const App = () => {
 				<div className='App'>
 					<Navbar />
 					<div className='container'>
-						<Switch>
-							<Route
-								exact
-								path='/'
-								render={(props) => {
-									// props contains history match and other values related to route
-									// params of route are in props.match.params
-									return (
-										<Fragment>
-											<AlertState>
-												<Alert />
-												<Search />
-											</AlertState>
-											<Users />
-										</Fragment>
-									);
-								}}
-							/>
-							<Route exact path='/about' component={About} />
-							<Route exact path='/user/:login' component={User} />
-						</Switch>
+						<AlertState>
+							<Alert />
+							<Switch>
+								<Route exact path='/' component={Home} />
+								<Route exact path='/about' component={About} />
+								<Route exact path='/user/:login' component={User} />
+								<Route component={NotFound} />
+							</Switch>
+						</AlertState>
 					</div>
 				</div>
 			</Router>
@@ -46,3 +34,8 @@ const App = () => {
 };
 
 export default App;
+
+// Router.Provider provides history match etc as values inside it
+// which is transfered as props to render/components and everything inside of it
+// props contains history match and other values related to route
+// params of route are in props.match.params

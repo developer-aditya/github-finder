@@ -6,7 +6,7 @@ const Search = (props) => {
 	const githubContext = useContext(GithubContext);
 	const alertContext = useContext(AlertContext);
 
-	const { searchUsers, clearUsers, users } = githubContext;
+	const { setUsers, clearUsers, users } = githubContext;
 	const { setAlert } = alertContext;
 
 	const [text, setText] = useState('');
@@ -15,7 +15,7 @@ const Search = (props) => {
 		if (text === '') {
 			setAlert('Please Enter User Name...', 'light');
 		} else {
-			searchUsers(text);
+			setUsers(text);
 			setText('');
 		}
 		e.preventDefault();

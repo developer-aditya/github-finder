@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import AlertContext from '../../context/AlertContext/alertContext';
 
 const Alert = (props) => {
-	const { alert } = useContext(AlertContext);
+	const alertContext = useContext(AlertContext);
+	const { alert } = alertContext;
 	return (
 		alert !== null && (
 			<div className={`alert alert-${alert.type}`}>

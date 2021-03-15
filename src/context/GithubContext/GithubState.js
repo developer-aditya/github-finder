@@ -14,7 +14,6 @@ const GithubState = (props) => {
 	const intialState = {
 		users: [],
 		loading: false,
-		alert: null,
 		user: {},
 		repos: [],
 	};
@@ -41,7 +40,7 @@ const GithubState = (props) => {
 	};
 
 	// GET USERS DATA AND DISPATCH TO REDUCER
-	const searchUsers = async (text) => {
+	const setUsers = async (text) => {
 		setLoading(true);
 		try {
 			const options = {
@@ -78,18 +77,16 @@ const GithubState = (props) => {
 	const clearUsers = () => dispatch({ type: CLEAR_USERS });
 
 	// SET LOADING
-	const setLoading = (ans) =>
-		dispatch({ type: SET_LOADING, payload: ans });
+	const setLoading = (ans) => dispatch({ type: SET_LOADING, payload: ans });
 
 	return (
 		<GithubContext.Provider
 			value={{
 				users: state.users,
 				loading: state.loading,
-				alert: state.alert,
 				user: state.user,
 				repos: state.repos,
-				searchUsers,
+				setUsers,
 				clearUsers,
 				getUser,
 				getRepos,
